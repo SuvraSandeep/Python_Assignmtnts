@@ -44,7 +44,7 @@ print("\nLet's begin voting! Each voter can vote only once.\n")
 # ----------------------------
 while voters:
     print("Enter your name below to cast the vote\n", end="")
-    print("Enter \"END\" to stop the Voting process")
+    print("Enter \"END\" to stop the Voting process")              
     voter_name = input()
     voter_name = voter_name.lower()
     if (voter_name == "end"):
