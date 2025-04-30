@@ -44,9 +44,17 @@ print("\nLet's begin voting! Each voter can vote only once.\n")
 # ----------------------------
 while voters:
     print("Enter your name below to cast the vote\n", end="")
+    print("Enter \"END\" to stop the Voting process")
     voter_name = input()
     voter_name = voter_name.lower()
-
+    if (voter_name == "end"):
+        confirm = input("Type \'Y\' to end the voting immediately and Declare the RESULTS \n")
+        Nconfirm = input("Type \'N\' to end the voting immediately and Declare the RESULTS \n")
+        confirm = confirm.lower()
+        if (confirm == "y"):
+            break
+        else:
+            continue
     if voter_name in voters.keys():
         print("Your name is in the voters list.")
         signum = input("Write your SIGNUM below to authenticate yourself\n")
@@ -68,7 +76,6 @@ while voters:
                 leaders[vote] = leaders[vote] + 1
                 print("Congratulations!")
                 voters.pop(voter_name)  # Remove voter after voting
-
                 if voters == {}:
                     print("Everyone on the voters list has completed their voting.")
                 else:
