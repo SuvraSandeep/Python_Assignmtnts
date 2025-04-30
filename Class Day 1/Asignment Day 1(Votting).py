@@ -42,19 +42,36 @@ print("\nLet's begin voting! Each voter can vote only once.\n")
 # ----------------------------
 # Voting Process
 # ----------------------------
+flg = False
 while voters:
     print("Enter your name below to cast the vote\n", end="")
     print("Enter \"END\" to stop the Voting process")
     voter_name = input()
     voter_name = voter_name.lower()
     if (voter_name == "end"):
-        confirm = input("Type \'Y\' to end the voting immediately and Declare the RESULTS \n")
-        Nconfirm = input("Type \'N\' to end the voting immediately and Declare the RESULTS \n")
-        confirm = confirm.lower()
-        if (confirm == "y"):
+        confirm = input("Type \'Y\' to end the voting immediately and Declare the RESULTS \n OR \n Type \'N\' to continue the voting\n")
+        while (confirm != "Y" or confirm != "N"):
+            print("Unidentified characters\n")
+            confirm = input("Type again\n")
+            if (confirm == "Y" or confirm == "N"):
+                break
+            else:
+                continue
+        if (confirm == "Y"):
             break
-        else:
+        elif (confirm == "N"):
+            print(".........Continueing the Voting session.........")
             continue
+        # while (confirm != "Y" or confirm != "N"):
+        #     print("Unidentified characters\n")
+        #     confirm = input("Type again\n")
+        #     continue
+        # else:
+        #     while (confirm != "Y" or confirm != "N"):
+        #         print("Unidentified characters\n")
+        #         confirm = input("Type again")
+        #         continue
+        #     print("Unidentified characters  \n\n\n\n\n\n\n")
     if voter_name in voters.keys():
         print("Your name is in the voters list.")
         signum = input("Write your SIGNUM below to authenticate yourself\n")
@@ -89,6 +106,8 @@ while voters:
         print(voter_name.title(), "you have already casted your vote.")
     else:
         print("Your name is not in the list.")
+else:
+    print("sdkljfskjflsdk")
 
 # ----------------------------
 # Election Result
