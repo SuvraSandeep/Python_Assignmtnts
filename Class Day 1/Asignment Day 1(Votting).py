@@ -62,16 +62,6 @@ while voters:
         elif (confirm == "N"):
             print(".........Continueing the Voting session.........")
             continue
-        # while (confirm != "Y" or confirm != "N"):
-        #     print("Unidentified characters\n")
-        #     confirm = input("Type again\n")
-        #     continue
-        # else:
-        #     while (confirm != "Y" or confirm != "N"):
-        #         print("Unidentified characters\n")
-        #         confirm = input("Type again")
-        #         continue
-        #     print("Unidentified characters  \n\n\n\n\n\n\n")
     if voter_name in voters.keys():
         print("Your name is in the voters list.")
         signum = input("Write your SIGNUM below to authenticate yourself\n")
