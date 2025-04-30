@@ -44,7 +44,7 @@ print("\nLet's begin voting! Each voter can vote only once.\n")
 # ----------------------------
 while voters:
     print("Enter your name below to cast the vote\n", end="")
-    print("Enter \"END\" to stop the Voting process")              
+    print("Enter \"END\" to stop the Voting process")
     voter_name = input()
     voter_name = voter_name.lower()
     if (voter_name == "end"):
@@ -60,7 +60,7 @@ while voters:
         signum = input("Write your SIGNUM below to authenticate yourself\n")
         signum = signum.lower()
 
-        if signum in voters.values():
+        if signum in voters[voter_name]:
             print("You are now authenticated and can proceed to cast your vote\n")
             print("Choose your leader:")
 
