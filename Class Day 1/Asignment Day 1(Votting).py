@@ -120,4 +120,4 @@ else:
         print(f"- {w.title()} ({leaders[w]} votes)")
 
 for names,choose in history.items():
-    print(f'{names} voted to {choose}') 
+    print(f'Voting history...\n{names} voted to {choose}') 
