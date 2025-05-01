@@ -114,7 +114,10 @@ for candidate, vote_count in candidates.items():
 # ------------------------------------------
 # Declare Winner(s)
 # ------------------------------------------
-winners = [name for name, votes in candidates.items() if votes == max_votes]
+winners = []
+for names, votes in candidates.items():
+    if (votes == max_votes):
+        winners.append(names)
 
 if len(winners) == 1:
     print(f"\n🏆 Winner of the election is: {winners[0].title()} with {max_votes} votes!")
