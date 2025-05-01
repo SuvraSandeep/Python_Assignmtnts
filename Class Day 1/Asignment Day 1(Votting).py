@@ -1,9 +1,11 @@
-# Election Application — Day 1 Project
+# ------------------------------------------
+# 🗳️ Election Application — Day 1 Project 🗳️
+# ------------------------------------------
 
-# ----------------------------
-# List of voters with their identities
-# ----------------------------
-voters = {
+# ------------------------------------------
+# Dictionary of Voters with their SIGNUMs
+# ------------------------------------------
+voter_credentials = {
     's': 'e', 
     'd': 'r',
     'hindol majumdar': 'ehinmaj', 
@@ -17,107 +19,110 @@ voters = {
     'subhojit saha': 'eusbash'
 }
 
-# Creating a backup list to track voters who have already voted
-voter_list = voters.copy()
-history = {}        #To store the history of voting process.
+# Make a copy for tracking voting progress
+eligible_voters = voter_credentials.copy()
+voting_history = {}  # Stores who voted for whom
 
-# ----------------------------
-# List of Leaders (Candidates)
-# ----------------------------
-leaders = {
+# ------------------------------------------
+# Candidate Leaders and Vote Counter
+# ------------------------------------------
+candidates = {
     "dup": 0,
     "python": 0,
     "java": 0
 }
 
-# ----------------------------
-# Welcome Message
-# ----------------------------
-print("\nWelcome to the Ericsson Election\nCandidates standing for election are:\n")
-for candidate in leaders.keys():
+# ------------------------------------------
+# Display Welcome Message and Candidates
+# ------------------------------------------
+print("\n🎉 Welcome to the Ericsson MediationElection 🎉\nCandidates standing for election are:\n")
+for candidate in candidates.keys():
     print("-", candidate.title())
 
 print("\nLet's begin voting! Each voter can vote only once.\n")
 
-# ----------------------------
-# Voting Process
-# ----------------------------
+# ------------------------------------------
+# Begin Voting Process
+# ------------------------------------------
+while eligible_voters:
+    voter_name = input('\nEnter your name to cast your vote (or type "END" to stop voting):\n').lower()
 
-while voters:
-    voter_name = input('''
-"Enter your name below to cast the vote.
-Type "END" to stop the Voting process\n''')
-    voter_name = voter_name.lower()
-    if (voter_name == "end"):
-        confirm = input('''Type \'Y\' to end the voting immediately and Declare the RESULTS \n OR \n Type \'N\' to continue the voting\n''')
-        if(confirm != "Y" and confirm != "N"):
-            while (confirm != "Y" or confirm != "N"):
-                print("Unidentified characters\n")
-                confirm = input("Type again:\nType \'Y\' to end the voting immediately and Declare the RESULTS \n OR \n Type \'N\' to continue the voting\n")
-                if (confirm == "Y" or confirm == "N"):
-                    break
-                else:
-                    continue
-        if (confirm == "Y"):
+    # Handle early termination of voting
+    if voter_name == "end":
+        confirm = input("\nType 'Y' to end voting and declare results\nOR\nType 'N' to continue voting\n")
+
+        if confirm not in ["Y", "N"]:
+            while confirm not in ["Y", "N"]:
+                print("⚠️ Invalid input. Please try again.")
+                confirm = input("Type 'Y' to end voting or 'N' to continue:\n")
+        
+        if confirm == "Y":
             break
-        elif (confirm == "N"):
-            print(".........Continueing the Voting session.........")
+        elif confirm == "N":
+            print("\n✅ Continuing the voting session...\n")
             continue
-    if voter_name in voters.keys():
-        signum = input("Write your SIGNUM below to authenticate yourself\n")
-        signum = signum.lower()
 
-        if signum in voters[voter_name]:
-            print("You are now authenticated and can proceed to cast your vote\nChoose your leader:")
+    # Check if the voter is in the eligible list
+    if voter_name in eligible_voters:
+        signum = input("Please enter your SIGNUM for authentication:\n").lower()
 
-            # Display candidates
-            for candidate in leaders.keys():
+        if signum in eligible_voters[voter_name]:
+            print("\n✅ Authentication successful! Proceed to vote.\nHere are the candidates:")
+
+            for candidate in candidates.keys():
                 print("-", candidate.title())
-            vote = input("Type the name of the leader you want to vote for\n")
-            vote = vote.lower()
+            
+            vote = input("Enter the name of the candidate you wish to vote for:\n").lower()
 
-            if vote in leaders:
-                print("Congratulations! \n Your vote is casted to", vote.title())
-                leaders[vote] = leaders[vote] + 1
-                history.update({voter_name:vote})
-                voters.pop(voter_name)  # Remove voter after voting
-                if voters == {}:
-                    print("Everyone on the voters list has completed their voting.")
+            if vote in candidates:
+                print("\n🎉 Congratulations! Your vote has been cast for", vote.title())
+                candidates[vote] += 1
+                voting_history[voter_name] = vote
+                eligible_voters.pop(voter_name)  # Remove voter to prevent re-voting
+
+                if not eligible_voters:
+                    print("🎯 All voters have completed their voting.")
                 else:
-                    print("Now, please allow the next person to vote.\n")
+                    print("\n➡️ Please allow the next voter to proceed.\n")
             else:
-                print("Voting failure: Leader's name mismatch.")
+                print("❌ Voting failed: Candidate not recognized.")
         else:
-            print('''Authentication failure: SIGNUM Mismatch.\nYour vote will not be casted.''')
-    elif voter_name in history:
-        print(voter_name.title(), "you have already casted your vote.")
+            print("🚫 Authentication failed: SIGNUM mismatch. Vote not recorded.")
+    
+    # Check if voter has already voted
+    elif voter_name in voting_history:
+        print(f"⚠️ {voter_name.title()}, you have already cast your vote.")
     else:
-        print("Your name is not in the list.")
+        print("❌ Your name is not in the voters list.")
 
-# ----------------------------
-# Election Result
-# ----------------------------
-print("...............Voting session ended................\n")
-max_votes = max(leaders.values())
+# ------------------------------------------
+# Voting Session Ends - Time for Results!
+# ------------------------------------------
+print("\n🔚 Voting session ended. Let's look at the results...\n")
 
-print("Results:")
-for candidate in leaders:
-    print(candidate, "got", leaders[candidate], "votes.")
+# ------------------------------------------
+# Display Results
+# ------------------------------------------
+max_votes = max(candidates.values())
+print("📊 Final Vote Tally:")
+for candidate, vote_count in candidates.items():
+    print(f"- {candidate.title()}: {vote_count} votes")
 
-# ----------------------------
-# Winner Declaration
-# ----------------------------
-winners = []
-for name, votes in leaders.items():
-    if votes == max_votes:
-        winners.append(name)
+# ------------------------------------------
+# Declare Winner(s)
+# ------------------------------------------
+winners = [name for name, votes in candidates.items() if votes == max_votes]
 
 if len(winners) == 1:
-    print("\nWinner of the election is:", winners[0].title(), "with", max_votes, "votes.")
+    print(f"\n🏆 Winner of the election is: {winners[0].title()} with {max_votes} votes!")
 else:
-    print("\nIt is a tie between the following candidates:")
-    for w in winners:
-        print(f"- {w.title()} ({leaders[w]} votes)")
+    print("\n🤝 It's a tie between the following candidates:")
+    for name in winners:
+        print(f"- {name.title()} ({candidates[name]} votes)")
 
-for names,choose in history.items():
-    print(f'Voting history...\n{names} voted to {choose}') 
+# ------------------------------------------
+# Display Voting History
+# ------------------------------------------
+print("\n📝 Voting History:")
+for voter, voted_for in voting_history.items():
+    print(f"- {voter.title()} voted for {voted_for.title()}")
