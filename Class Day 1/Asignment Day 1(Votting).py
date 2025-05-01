@@ -53,18 +53,11 @@ Type "END" to stop the Voting process\n''')
         if(confirm != "Y" and confirm != "N"):
             while (confirm != "Y" or confirm != "N"):
                 print("Unidentified characters\n")
-                confirm = input("Type again\n")
+                confirm = input("Type again:\nType \'Y\' to end the voting immediately and Declare the RESULTS \n OR \n Type \'N\' to continue the voting\n")
                 if (confirm == "Y" or confirm == "N"):
                     break
                 else:
                     continue
-        # while (confirm != "Y" or confirm != "N"):
-        #     print("Unidentified characters\n")
-        #     confirm = input("Type again\n")
-        #     if (confirm == "Y" or confirm == "N"):
-        #         break
-        #     else:
-        #         continue
         if (confirm == "Y"):
             break
         elif (confirm == "N"):
@@ -125,5 +118,4 @@ else:
     print("\nIt is a tie between the following candidates:")
     for w in winners:
         print(f"- {w.title()} ({leaders[w]} votes)")
-print(history)
 
