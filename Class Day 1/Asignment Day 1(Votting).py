@@ -1,6 +1,5 @@
 # Election Application — Day 1 Project
 
-
 # ----------------------------
 # List of voters with their identities
 # ----------------------------
@@ -51,13 +50,21 @@ Type "END" to stop the Voting process\n''')
     voter_name = voter_name.lower()
     if (voter_name == "end"):
         confirm = input('''Type \'Y\' to end the voting immediately and Declare the RESULTS \n OR \n Type \'N\' to continue the voting\n''')
-        while (confirm != "Y" or confirm != "N"):
-            print("Unidentified characters\n")
-            confirm = input("Type again\n")
-            if (confirm == "Y" or confirm == "N"):
-                break
-            else:
-                continue
+        if(confirm != "Y" and confirm != "N"):
+            while (confirm != "Y" or confirm != "N"):
+                print("Unidentified characters\n")
+                confirm = input("Type again\n")
+                if (confirm == "Y" or confirm == "N"):
+                    break
+                else:
+                    continue
+        # while (confirm != "Y" or confirm != "N"):
+        #     print("Unidentified characters\n")
+        #     confirm = input("Type again\n")
+        #     if (confirm == "Y" or confirm == "N"):
+        #         break
+        #     else:
+        #         continue
         if (confirm == "Y"):
             break
         elif (confirm == "N"):
@@ -97,7 +104,7 @@ Type "END" to stop the Voting process\n''')
 # ----------------------------
 # Election Result
 # ----------------------------
-print("Voting session ended.\n")
+print("...............Voting session ended................\n")
 max_votes = max(leaders.values())
 
 print("Results:")
