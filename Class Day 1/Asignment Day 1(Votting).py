@@ -66,14 +66,17 @@ while eligible_voters:
     if voter_name in eligible_voters:
         signum = input("Please enter your SIGNUM for authentication:\n").lower()
 
-        if signum in eligible_voters[voter_name]:
+        if (signum == eligible_voters[voter_name]):
             print("\n✅ Authentication successful! Proceed to vote.\nHere are the candidates:")
 
             for candidate in candidates.keys():
                 print("-", candidate.title())
             
             vote = input("Enter the name of the candidate you wish to vote for:\n").lower()
-
+            confirm_vote = input(f"You chose {vote.title()}. Confirm vote? (Y/N): ").lower()
+            if confirm_vote != "y":
+                print("Vote cancelled.")
+                continue
             if vote in candidates:
                 print("\n🎉 Congratulations! Your vote has been cast for", vote.title())
                 candidates[vote] += 1
