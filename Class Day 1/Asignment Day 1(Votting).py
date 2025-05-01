@@ -19,6 +19,7 @@ voters = {
 
 # Creating a backup list to track voters who have already voted
 voter_list = voters.copy()
+history = {}        #To store the history of voting process.
 
 # ----------------------------
 # List of Leaders (Candidates)
@@ -41,7 +42,7 @@ print("\nLet's begin voting! Each voter can vote only once.\n")
 # ----------------------------
 # Voting Process
 # ----------------------------
-flg = False
+
 while voters:
     voter_name = input('''
 "Enter your name below to cast the vote.
@@ -77,6 +78,7 @@ Type "END" to stop the Voting process\n''')
             if vote in leaders:
                 print("Congratulations! \n Your vote is casted to", vote.title())
                 leaders[vote] = leaders[vote] + 1
+                history.update({voter_name:vote})
                 voters.pop(voter_name)  # Remove voter after voting
                 if voters == {}:
                     print("Everyone on the voters list has completed their voting.")
@@ -86,7 +88,7 @@ Type "END" to stop the Voting process\n''')
                 print("Voting failure: Leader's name mismatch.")
         else:
             print('''Authentication failure: SIGNUM Mismatch.\nYour vote will not be casted.''')
-    elif voter_name in voter_list:
+    elif voter_name in history:
         print(voter_name.title(), "you have already casted your vote.")
     else:
         print("Your name is not in the list.")
@@ -115,3 +117,5 @@ else:
     print("\nIt is a tie between the following candidates:")
     for w in winners:
         print(f"- {w.title()} ({leaders[w]} votes)")
+print(history)
+
