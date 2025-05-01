@@ -1,5 +1,6 @@
 # Election Application — Day 1 Project
 
+
 # ----------------------------
 # List of voters with their identities
 # ----------------------------
