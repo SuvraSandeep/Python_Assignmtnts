@@ -129,6 +129,82 @@ def add_voter():
     
     return f"✅ {new_voter_name.title()} has been added as a voter with SIGNUM: {signum}"
 
+def authenticate_admin():
+    """
+    Authenticate an administrator using predefined credentials.
+    
+    Returns:
+        bool: True if authentication is successful, False otherwise
+    """
+    print("\n🔐 Admin Authentication Required 🔐")
+    print("--------------------------------")
+    
+    # Admin credentials
+    ADMIN_USERNAME = "STG"
+    ADMIN_PASSWORD = "STG@77"
+    
+    # Get admin credentials
+    username = input("Enter admin username: ")
+    password = input("Enter admin password: ")
+    
+    # Validate credentials
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        print("\n✅ Admin authentication successful!")
+        return True
+    else:
+        print("\n❌ Admin authentication failed. Access denied.")
+        return False
+
+def remove_voter():
+    """
+    Remove a voter from the system. Requires admin authentication.
+    
+    Returns:
+        str: Status message
+    """
+    print("\n❌ Remove Voter ❌")
+    print("----------------")
+    
+    # First authenticate admin
+    if not authenticate_admin():
+        return "🔒 Operation cancelled: Admin authentication required."
+    
+    # Show current voters
+    print("\nCurrent registered voters:")
+    if not voter_credentials:
+        return "ℹ️ There are no registered voters to remove."
+    
+    for voter_name in voter_credentials.keys():
+        status = "✅ Has voted" if voter_name in voting_history else "⏳ Not voted yet"
+        print(f"- {voter_name.title()} ({status})")
+    
+    # Get voter to remove
+    voter_to_remove = input("\nEnter the name of the voter to remove: ").lower().strip()
+    
+    # Validate input
+    if not voter_to_remove:
+        return "⚠️ Voter name cannot be empty."
+        
+    if voter_to_remove not in voter_credentials:
+        return f"⚠️ {voter_to_remove.title()} is not a registered voter."
+    
+    # Confirm removal
+    confirm = input(f"Are you sure you want to remove {voter_to_remove.title()}? (Y/N): ").upper()
+    if confirm != "Y":
+        return "🛑 Voter removal cancelled."
+    
+    # Remove the voter
+    voter_credentials.pop(voter_to_remove)
+    
+    # Also remove from eligible voters if they haven't voted yet
+    if voter_to_remove in eligible_voters:
+        eligible_voters.pop(voter_to_remove)
+    
+    # Note: We don't remove from voting_history if they've already voted,
+    # as that would affect the election integrity
+    
+    return f"✅ {voter_to_remove.title()} has been removed from the voters list."
+
 # ------------------------------------------
 # User Interface and Display Functions
 # ------------------------------------------
@@ -175,11 +251,12 @@ def display_main_menu():
     print("1. Start the Election")
     print("2. Add Candidate")
     print("3. Add Voter")
-    print("4. View Registered Voters")
-    print("5. View Candidates")
-    print("6. Exit")
+    print("4. Remove Voter (Admin Only)")
+    print("5. View Registered Voters")
+    print("6. View Candidates")
+    print("7. Exit")
     
-    choice = input("\nEnter your choice (1-6): ")
+    choice = input("\nEnter your choice (1-7): ")
     return choice
 
 def view_registered_voters():
@@ -485,17 +562,21 @@ def menu_system():
             result = add_voter()
             print(result)
         elif choice == "4":
+            # Remove voter (Admin Only)
+            result = remove_voter()
+            print(result)
+        elif choice == "5":
             # View registered voters
             view_registered_voters()
-        elif choice == "5":
+        elif choice == "6":
             # View candidates
             view_candidates()
-        elif choice == "6":
+        elif choice == "7":
             # Exit the system
             print("\n👋 Thank you for using the Election System. Goodbye!")
             break
         else:
-            print("\n⚠️ Invalid choice. Please select a number between 1 and 6.")
+            print("\n⚠️ Invalid choice. Please select a number between 1 and 7.")
         
         # Pause before showing the menu again
         input("\nPress Enter to continue...")
