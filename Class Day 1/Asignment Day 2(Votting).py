@@ -1,5 +1,5 @@
 # ------------------------------------------
-# 🗳️ Election Application — Day 1 Project 🗳️
+# 🗳️ Enhanced Election Application — Interactive Menu System 🗳️
 # ------------------------------------------
 
 # ------------------------------------------
@@ -51,6 +51,35 @@ voting_history = {}
 # Candidate Management Functions
 # ------------------------------------------
 
+def add_candidate():
+    """
+    Add a new candidate to the election through user input.
+    
+    Returns:
+        str: Status message
+    """
+    print("\n✨ Add New Candidate ✨")
+    print("---------------------")
+    
+    # Display current candidates
+    print("\nCurrent candidates:")
+    for candidate_name in candidates.keys():
+        print(f"- {candidate_name.title()}")
+    
+    # Get new candidate name
+    new_candidate = input("\nEnter the name of the new candidate: ").lower().strip()
+    
+    # Validate input
+    if not new_candidate:
+        return "⚠️ Candidate name cannot be empty."
+        
+    if new_candidate in candidates:
+        return f"⚠️ {new_candidate.title()} is already a candidate."
+    
+    # Add the new candidate with zero votes
+    candidates[new_candidate] = 0
+    return f"✅ {new_candidate.title()} has been added as a candidate."
+
 def leader_onboard(candidate_name):
     """
     Add a new candidate to the election.
@@ -63,6 +92,42 @@ def leader_onboard(candidate_name):
     """
     candidates.update({candidate_name: 0})
     return "Leader name added"
+
+# ------------------------------------------
+# Voter Management Functions
+# ------------------------------------------
+
+def add_voter():
+    """
+    Add a new voter to the election through user input.
+    
+    Returns:
+        str: Status message
+    """
+    print("\n👤 Add New Voter 👤")
+    print("-----------------")
+    
+    # Get voter details
+    new_voter_name = input("Enter the name of the new voter: ").lower().strip()
+    
+    # Validate input
+    if not new_voter_name:
+        return "⚠️ Voter name cannot be empty."
+        
+    if new_voter_name in voter_credentials:
+        return f"⚠️ {new_voter_name.title()} is already registered."
+    
+    # Get SIGNUM credential
+    signum = input("Enter the SIGNUM credential for this voter: ").lower().strip()
+    
+    if not signum:
+        return "⚠️ SIGNUM credential cannot be empty."
+    
+    # Add the new voter
+    voter_credentials[new_voter_name] = signum
+    eligible_voters[new_voter_name] = signum
+    
+    return f"✅ {new_voter_name.title()} has been added as a voter with SIGNUM: {signum}"
 
 # ------------------------------------------
 # User Interface and Display Functions
@@ -100,6 +165,51 @@ def display_voting_history():
     print("\n📝 Voting History:")
     for voter_name, candidate_choice in voting_history.items():
         print(f"- {voter_name.title()} voted for {candidate_choice.title()}")
+
+def display_main_menu():
+    """
+    Display the main menu options for the election system.
+    """
+    print("\n🗳️ Election System Main Menu 🗳️")
+    print("==============================")
+    print("1. Start the Election")
+    print("2. Add Candidate")
+    print("3. Add Voter")
+    print("4. View Registered Voters")
+    print("5. View Candidates")
+    print("6. Exit")
+    
+    choice = input("\nEnter your choice (1-6): ")
+    return choice
+
+def view_registered_voters():
+    """
+    Display all registered voters and their voting status.
+    """
+    print("\n📋 Registered Voters List 📋")
+    print("==========================")
+    
+    if not voter_credentials:
+        print("No voters are registered.")
+        return
+    
+    for voter_name in voter_credentials.keys():
+        status = "✅ Has voted" if voter_name in voting_history else "⏳ Not voted yet"
+        print(f"- {voter_name.title()} ({status})")
+
+def view_candidates():
+    """
+    Display all registered candidates.
+    """
+    print("\n🏆 Registered Candidates 🏆")
+    print("==========================")
+    
+    if not candidates:
+        print("No candidates are registered.")
+        return
+    
+    for candidate_name in candidates.keys():
+        print(f"- {candidate_name.title()}")
 
 # ------------------------------------------
 # Voter Authentication and Validation Functions
@@ -261,7 +371,7 @@ def get_max_votes():
     Returns:
         int: The highest vote count
     """
-    return max(candidates.values())
+    return max(candidates.values()) if candidates else 0
 
 def find_winners():
     """
@@ -287,6 +397,10 @@ def declare_winner():
     """
     winning_candidates, highest_vote_count = find_winners()
     
+    if not voting_history:
+        print("\n⚠️ No votes were cast in this election.")
+        return
+    
     # Check if there is a single winner or multiple winners (tie)
     if len(winning_candidates) == 1:
         print(f"\n🏆 Winner of the election is: {winning_candidates[0].title()} with {highest_vote_count} votes!")
@@ -302,10 +416,18 @@ def declare_winner():
 def run_election():
     """
     Run the main election process from start to finish.
-    This is the primary control function for the application.
     """
     # Start with welcome message
     display_welcome_message()
+    
+    # Validate we have voters and candidates before starting
+    if not voter_credentials:
+        print("⚠️ There are no registered voters. Please add voters before starting the election.")
+        return
+        
+    if not candidates:
+        print("⚠️ There are no registered candidates. Please add candidates before starting the election.")
+        return
     
     # Begin the voting loop
     while eligible_voters:
@@ -342,7 +464,43 @@ def end_election():
     declare_winner()
     display_voting_history()
 
+def menu_system():
+    """
+    Main menu system that controls the flow of the application.
+    """
+    print("\n🗳️ Welcome to the Ericsson Mediation Election System 🗳️")
+    
+    while True:
+        choice = display_main_menu()
+        
+        if choice == "1":
+            # Start the election
+            run_election()
+        elif choice == "2":
+            # Add candidate
+            result = add_candidate()
+            print(result)
+        elif choice == "3":
+            # Add voter
+            result = add_voter()
+            print(result)
+        elif choice == "4":
+            # View registered voters
+            view_registered_voters()
+        elif choice == "5":
+            # View candidates
+            view_candidates()
+        elif choice == "6":
+            # Exit the system
+            print("\n👋 Thank you for using the Election System. Goodbye!")
+            break
+        else:
+            print("\n⚠️ Invalid choice. Please select a number between 1 and 6.")
+        
+        # Pause before showing the menu again
+        input("\nPress Enter to continue...")
+
 # ------------------------------------------
 # Start the Election Application
 # ------------------------------------------
-run_election()
+menu_system()
