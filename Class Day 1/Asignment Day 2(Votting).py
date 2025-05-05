@@ -7,6 +7,14 @@
 # ------------------------------------------
 
 def initialize_data():
+    """
+    Initialize voter credentials and candidate data.
+    
+    Returns:
+        tuple: Contains two dictionaries:
+            - voter_database: Dictionary mapping voter names to their SIGNUM credentials
+            - candidate_database: Dictionary with candidate names as keys and vote counts as values
+    """
     # Database of registered voters with their authentication details
     voter_database = {
         's': 'e', 
@@ -44,6 +52,12 @@ voting_history = {}
 # ------------------------------------------
 
 def authenticate_admin():
+    """
+    Authenticate an administrator using username and password.
+    
+    Returns:
+        bool: True if authentication is successful, False otherwise
+    """
     print("\n🔐 Admin Authentication Required 🔐")
     print("---------------------------------")
     
@@ -68,6 +82,12 @@ def authenticate_admin():
 # ------------------------------------------
 
 def add_candidate():
+    """
+    Add a new candidate to the election through user input after admin authentication.
+    
+    Returns:
+        str: Status message
+    """
     print("\n✨ Add New Candidate ✨")
     print("---------------------")
     
@@ -95,7 +115,12 @@ def add_candidate():
     return f"✅ {new_candidate.title()} has been added as a candidate."
 
 def remove_candidate():
-
+    """
+    Remove a candidate from the election system after admin authentication.
+    
+    Returns:
+        str: Status message
+    """
     print("\n❌ Remove Candidate ❌")
     print("-------------------")
     
@@ -138,7 +163,15 @@ def remove_candidate():
     return f"✅ {candidate_to_remove.title()} has been removed from the candidates list."
 
 def leader_onboard(candidate_name):
-
+    """
+    Add a new candidate to the election.
+    
+    Args:
+        candidate_name (str): Name of the new candidate to add
+        
+    Returns:
+        str: Confirmation message
+    """
     candidates.update({candidate_name: 0})
     return "Leader name added"
 
@@ -147,7 +180,12 @@ def leader_onboard(candidate_name):
 # ------------------------------------------
 
 def add_voter():
-
+    """
+    Add a new voter to the election through user input after admin authentication.
+    
+    Returns:
+        str: Status message
+    """
     print("\n👤 Add New Voter 👤")
     print("-----------------")
     
@@ -178,7 +216,12 @@ def add_voter():
     return f"✅ {new_voter_name.title()} has been added as a voter with SIGNUM: {signum}"
 
 def remove_voter():
-
+    """
+    Remove a voter from the election system after admin authentication.
+    
+    Returns:
+        str: Status message
+    """
     print("\n❌ Remove Voter ❌")
     print("----------------")
     
@@ -225,45 +268,62 @@ def remove_voter():
 # ------------------------------------------
 
 def display_welcome_message():
-
+    """
+    Display the welcome message and list of candidates at the start of the election.
+    """
     print("\n🎉 Welcome to the Ericsson MediationElection 🎉\nCandidates standing for election are:\n")
     for candidate in candidates.keys():
         print("-", candidate.title())
     print("\nLet's begin voting! Each voter can vote only once.\n")
 
 def display_candidates():
-
+    """
+    Display all available candidates for the election.
+    """
     print("Here are the candidates:")
     for candidate in candidates.keys():
         print("-", candidate.title())
 
 def display_results():
-
-    print("\n📊 Final Vote Tally:")
+    """
+    Display the current vote tally for all candidates.
+    """
+    print("\n📊 Current Vote Tally:")
     for candidate, vote_count in candidates.items():
         print(f"- {candidate.title()}: {vote_count} votes")
 
 def display_voting_history():
-
+    """
+    Display the complete voting record showing which voter voted for which candidate.
+    """
     print("\n📝 Voting History:")
+    if not voting_history:
+        print("No votes have been cast yet.")
+        return
+        
     for voter_name, candidate_choice in voting_history.items():
         print(f"- {voter_name.title()} voted for {candidate_choice.title()}")
 
 def display_main_menu():
-
+    """
+    Display the main menu options for the election system.
+    """
     print("\n🗳️ Election System Main Menu 🗳️")
     print("==============================")
     print("1. Start the Election")
     print("2. Admin Menu (Authentication Required)")
     print("3. View Registered Voters")
     print("4. View Candidates")
-    print("5. Exit")
+    print("5. View Current Election Results")  # NEW OPTION
+    print("6. Exit")
     
-    choice = input("\nEnter your choice (1-5): ")
+    choice = input("\nEnter your choice (1-6): ")  # Updated range
     return choice
 
 def display_admin_menu():
-
+    """
+    Display admin-only menu options.
+    """
     print("\n👑 Admin Control Panel 👑")
     print("=======================")
     print("1. Add Candidate")
@@ -276,7 +336,9 @@ def display_admin_menu():
     return choice
 
 def view_registered_voters():
-
+    """
+    Display all registered voters and their voting status.
+    """
     print("\n📋 Registered Voters List 📋")
     print("==========================")
     
@@ -289,7 +351,9 @@ def view_registered_voters():
         print(f"- {voter_name.title()} ({status})")
 
 def view_candidates():
-
+    """
+    Display all registered candidates.
+    """
     print("\n🏆 Registered Candidates 🏆")
     print("==========================")
     
@@ -300,26 +364,103 @@ def view_candidates():
     for candidate_name, votes in candidates.items():
         print(f"- {candidate_name.title()} (Current votes: {votes})")
 
+def view_current_results():
+    """
+    Display the current election results without ending the election.
+    Shows vote counts, current leader(s), and voting progress.
+    """
+    print("\n📊 Current Election Results 📊")
+    print("===========================")
+    
+    # Check if any votes have been cast
+    if not voting_history:
+        print("⚠️ No votes have been cast yet.")
+        return
+    
+    # Display vote counts
+    display_results()
+    
+    # Display current leaders
+    winning_candidates, highest_vote_count = find_winners()
+    
+    if len(winning_candidates) == 1:
+        print(f"\n🥇 Current leader: {winning_candidates[0].title()} with {highest_vote_count} votes")
+    else:
+        print(f"\n🤝 Currently tied for the lead with {highest_vote_count} votes each:")
+        for candidate in winning_candidates:
+            print(f"- {candidate.title()}")
+    
+    # Display voting progress
+    total_voters = len(voter_credentials)
+    votes_cast = len(voting_history)
+    votes_remaining = len(eligible_voters)
+    
+    if total_voters > 0:
+        progress_percentage = (votes_cast / total_voters) * 100
+        print(f"\n📈 Voting progress: {votes_cast}/{total_voters} ({progress_percentage:.1f}%)")
+        print(f"⏳ Remaining eligible voters: {votes_remaining}")
+    
+    # Display recent voting activity
+    print("\n🔄 Recent voting activity:")
+    # Get the last 5 votes (or fewer if there aren't that many)
+    recent_votes = list(voting_history.items())[-5:]
+    for voter, candidate in recent_votes:
+        print(f"- {voter.title()} voted for {candidate.title()}")
+
 # ------------------------------------------
 # Voter Authentication and Validation Functions
 # ------------------------------------------
 
 def authenticate_voter(voter_name, signum_credential):
+    """
+    Authenticate a voter using their name and SIGNUM.
+    
+    Args:
+        voter_name (str): Name of the voter
+        signum_credential (str): SIGNUM credential provided by the voter
+        
+    Returns:
+        bool: True if authentication is successful, False otherwise
+    """
     if voter_name in eligible_voters:
         if signum_credential == eligible_voters[voter_name]:
             return True
     return False
 
 def is_eligible_to_vote(voter_name):
-
+    """
+    Check if a voter is eligible to vote (exists in eligible voters list).
+    
+    Args:
+        voter_name (str): Name of the voter to check
+        
+    Returns:
+        bool: True if voter is eligible, False otherwise
+    """
     return voter_name in eligible_voters
 
 def has_already_voted(voter_name):
-
+    """
+    Check if a voter has already cast their vote.
+    
+    Args:
+        voter_name (str): Name of the voter to check
+        
+    Returns:
+        bool: True if voter has already voted, False otherwise
+    """
     return voter_name in voting_history
 
 def is_valid_candidate(candidate_name):
-
+    """
+    Check if the candidate name provided is a valid candidate in the election.
+    
+    Args:
+        candidate_name (str): Name of the candidate to validate
+        
+    Returns:
+        bool: True if candidate exists, False otherwise
+    """
     return candidate_name in candidates
 
 # ------------------------------------------
@@ -327,7 +468,13 @@ def is_valid_candidate(candidate_name):
 # ------------------------------------------
 
 def record_vote(voter_name, candidate_name):
-
+    """
+    Record a vote for a candidate and update the necessary tracking information.
+    
+    Args:
+        voter_name (str): Name of the voter casting the vote
+        candidate_name (str): Name of the candidate receiving the vote
+    """
     # Increment the vote count for the selected candidate
     candidates[candidate_name] += 1
     # Record which candidate this voter selected
@@ -336,7 +483,15 @@ def record_vote(voter_name, candidate_name):
     eligible_voters.pop(voter_name)
 
 def confirm_user_choice(prompt_message):
-
+    """
+    Get Y/N confirmation from user with validation.
+    
+    Args:
+        prompt_message (str): Message to display to the user
+        
+    Returns:
+        bool: True for 'Y', False for 'N'
+    """
     while True:
         user_choice = input(prompt_message).upper()
         if user_choice in ["Y", "N"]:
@@ -344,7 +499,12 @@ def confirm_user_choice(prompt_message):
         print("⚠️ Invalid input. Please try again.")
 
 def handle_early_termination():
-
+    """
+    Handle early termination of voting process when user types "END".
+    
+    Returns:
+        bool: True if voting should end, False if voting should continue
+    """
     confirmation_prompt = "\nType 'Y' to end voting and declare results\nOR\nType 'N' to continue voting\n"
     should_terminate = confirm_user_choice(confirmation_prompt)
     
@@ -354,7 +514,15 @@ def handle_early_termination():
     return should_terminate
 
 def process_vote(voter_name):
-
+    """
+    Process a complete voting transaction for a voter.
+    
+    Args:
+        voter_name (str): Name of the voter
+        
+    Returns:
+        bool: True if vote was successfully cast, False otherwise
+    """
     # Authentication step
     signum_credential = input("Please enter your SIGNUM for authentication:\n").lower()
 
@@ -393,11 +561,23 @@ def process_vote(voter_name):
 # ------------------------------------------
 
 def get_max_votes():
-
+    """
+    Get the maximum number of votes received by any candidate.
+    
+    Returns:
+        int: The highest vote count
+    """
     return max(candidates.values()) if candidates else 0
 
 def find_winners():
-
+    """
+    Find the winner(s) of the election based on vote counts.
+    
+    Returns:
+        tuple: Contains:
+            - list: Names of candidates with the highest votes
+            - int: The maximum vote count
+    """
     highest_vote_count = get_max_votes()
     winning_candidates = []
     
@@ -408,7 +588,9 @@ def find_winners():
     return winning_candidates, highest_vote_count
 
 def declare_winner():
-
+    """
+    Declare the winner(s) of the election and handle tie scenarios.
+    """
     winning_candidates, highest_vote_count = find_winners()
     
     if not voting_history:
@@ -428,7 +610,9 @@ def declare_winner():
 # ------------------------------------------
 
 def run_election():
-
+    """
+    Run the main election process from start to finish.
+    """
     # Start with welcome message
     display_welcome_message()
     
@@ -466,7 +650,9 @@ def run_election():
     end_election()
 
 def end_election():
-
+    """
+    End the election process and display final results and voting history.
+    """
     print("\n🔚 Voting session ended. Let's look at the results...\n")
     
     # Show the final results
@@ -475,7 +661,9 @@ def end_election():
     display_voting_history()
 
 def admin_menu_system():
-
+    """
+    Admin submenu system that handles all administrative functions.
+    """
     # First authenticate as admin
     if not authenticate_admin():
         print("🚫 Access denied. Admin authentication required to access the admin menu.")
@@ -511,7 +699,9 @@ def admin_menu_system():
         input("\nPress Enter to continue...")
 
 def menu_system():
-
+    """
+    Main menu system that controls the flow of the application.
+    """
     print("\n🗳️ Welcome to the Ericsson Mediation Election System 🗳️")
     
     while True:
@@ -530,11 +720,14 @@ def menu_system():
             # View candidates
             view_candidates()
         elif choice == "5":
+            # View current election results (NEW OPTION)
+            view_current_results()
+        elif choice == "6":
             # Exit the system
             print("\n👋 Thank you for using the Election System. Goodbye!")
             break
         else:
-            print("\n⚠️ Invalid choice. Please select a number between 1 and 5.")
+            print("\n⚠️ Invalid choice. Please select a number between 1 and 6.")  # Updated range
         
         # Pause before showing the menu again
         input("\nPress Enter to continue...")
