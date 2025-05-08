@@ -7,6 +7,7 @@ import datetime
 import data_manager
 import results
 
+
 def save_election_state(file_path="election_state.txt"):
     """
     Save the current state of the election (who has voted, who hasn't, current results)
