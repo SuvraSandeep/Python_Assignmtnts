@@ -68,9 +68,10 @@ def display_admin_menu():
     print("2. Remove Candidate")
     print("3. Add Voter")
     print("4. Remove Voter")
-    print("5. Return to Main Menu")
+    print("5. Save Current Election State")
+    print("6. Return to Main Menu")
     
-    choice = input("\nEnter your choice (1-5): ")
+    choice = input("\nEnter your choice (1-6): ")
     return choice
 
 def view_registered_voters():
