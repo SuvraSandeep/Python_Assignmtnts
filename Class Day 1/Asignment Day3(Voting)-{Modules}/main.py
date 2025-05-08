@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # ------------------------------------------
 # 🗳️ Enhanced Election Application — Interactive Menu System 🗳️
 # ------------------------------------------
@@ -40,11 +41,15 @@ def admin_menu_system():
             result = voter_manager.remove_voter()
             print(result)
         elif choice == "5":
+            # Save current election state
+            print("\n💾 Saving current election state...")
+            file_manager.save_election_state()
+        elif choice == "6":
             # Return to main menu
             print("\n🔙 Returning to main menu...")
             break
         else:
-            print("\n⚠️ Invalid choice. Please select a number between 1 and 5.")
+            print("\n⚠️ Invalid choice. Please select a number between 1 and 6.")
         
         # Pause before showing the admin menu again
         input("\nPress Enter to continue...")
