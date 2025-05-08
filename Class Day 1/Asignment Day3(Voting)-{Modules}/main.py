@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ------------------------------------------
 # 🗳️ Enhanced Election Application — Interactive Menu System 🗳️
 # ------------------------------------------
@@ -10,6 +9,7 @@ import voter_manager
 import ui
 import voting
 import results
+import file_manager
 
 def admin_menu_system():
     """
@@ -99,6 +99,13 @@ def end_election():
     ui.display_results()
     results.declare_winner()
     ui.display_voting_history()
+    
+    # Write final results to file if there were any votes cast
+    if data_manager.voting_history:
+        print("\nWriting final results to results.txt...")
+        file_manager.write_final_results()
+    else:
+        print("\nNo votes were cast, so no results file was created.")
 
 def menu_system():
     """
