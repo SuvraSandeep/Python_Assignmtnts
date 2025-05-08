@@ -52,7 +52,7 @@ def display_main_menu():
     print("2. Admin Menu (Authentication Required)")
     print("3. View Registered Voters")
     print("4. View Candidates")
-    print("5. View Current Election Results")
+    print("5. View Current Election Results (Saves state to file)")
     print("6. Exit")
     
     choice = input("\nEnter your choice (1-6): ")
